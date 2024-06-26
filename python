@@ -1,0 +1,99 @@
+import mechanicalsoup
+import sqlite3
+import pandas as pd
+openai=mechanicalsoup.StatefulBrowser()
+openai.open(&#39;https://en.wikipedia.org/wiki/Comparison_of_Linux_dist
+ributions&#39;)
+th=openai.page.find_all(&quot;th&quot;, attrs={&quot;class&quot;:&quot;table-rh&quot;})
+columns=[value.text.replace(&quot;\n&quot;,&quot;&quot;) for value in th]
+distro=[value.text.replace(&quot;\n&quot;,&quot;&quot;) for value in th]
+columns=columns[6:10]
+column_names=[ &quot;Founder&quot;,
+&quot;Maintainer&quot;,
+&quot;Initial_Release_year&quot;,
+&quot;Current_STable_Version&quot;,
+&quot;Security_Ubdates&quot;,
+&quot;release_Data&quot;,
+&quot;System_Distribution_Commitment&quot;,
+&quot;forked_From&quot;,
+&quot;cost&quot;,
+&quot;Status&quot;
+]
+dictionary={&quot;Distribution&quot;:distro}
+for idx, key in enumerate(column_names):
+dictionary[key]=columns[idx:][::11]
+df=pd.DataFrame(data=dictionary)
+connection=sqlite3.connect(&quot;linux_distro.db&quot;)
+cursor=connection.cursor()
+
+cursor.execute(&quot;Create table lonux (Distro,
+&quot;+&quot;,&quot;.join(column_names)+&quot;)&quot;)
+for i in range(len(df)):
+cursor.execute(&quot;insert into linux values(?,?,?,?,?,?,?,?,?)&quot;,
+df.iloc[i])
+connection.commit()
+connection.close()
+print(columns)
+print(distro)
+
+#2
+from bs4 import BeautifulSoup
+import urllib.request
+
+url = &#39;https://docs.python.org/3/library/random.html&#39;
+
+with urllib.request.urlopen(url) as response:
+html = response.read()
+
+soup = BeautifulSoup(html, &#39;html.parser&#39;)
+
+dt_elements = soup.find_all(&#39;dt&#39;, id=&#39;random&#39;)
+
+random_classes = {}
+for dt in dt_elements:
+dd = dt.find_next_sibling(&#39;dd&#39;)
+if dd:
+random_classes[dt.get_text()] = dd.get_text()
+
+for key, value in random_classes.items():
+print(f&quot;{key}: {value}&quot;)
+import pandas as pd
+
+df = pd.DataFrame(list(random_classes.items()), columns=[&#39;Class
+Name&#39;, &#39;Description&#39;])
+
+print(df)
+
+#3
+om flask import Flask, jsonify, request
+# app=Flask(_name_)
+# books=[
+#     {
+#      'name': 'Harry Poter',
+#      'price': 9,
+#      'isbn': 10213
+#      },
+#     {
+#      'name': 'Harry Hogwars',
+#      'price': 9.99,
+#      'isbn': 2313,
+#      }
+# ]
+# @app.route('/')
+# def main():
+#     return "HELLO /books an /books/isbn(kodi)"
+#
+# @app.route('/books')
+# def get_books():
+#     return jsonify({'books':books})
+# @app.route('/books/<int:isbn>')
+# def get_book_by_isbn(isbn):
+#     return_value={}
+#     for book in books:
+#         if book["isbn"] == isbn:
+#             return_value={
+#                 'name':book["name"],
+#                 'price':book["price"]
+#                 }
+#     return jsonify(return_value)
+# app.run(port=5000)
